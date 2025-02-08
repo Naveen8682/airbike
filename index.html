@@ -298,13 +298,13 @@
     <audio id="audio2" src="tick.mp3"></audio>
 
     <script>
-        let ignition = 0;
-        let leftBlinking = false;
-        let rightBlinking = false;
-        let hazardOn = false;
-        let leftInterval, rightInterval;
-        let tickInterval;
-        let tickTimeout;
+         let ignition = 0;
+  let leftBlinking = false;
+  let rightBlinking = false;
+  let hazardOn = false;
+  let leftInterval, rightInterval, hazardTimeout;
+  let tickInterval;
+  let tickTimeout;
   
         function play() {
           if(ignition == 0) {
@@ -322,108 +322,102 @@
         }
   
         function startTickSound() {
-          // Clear any existing tick intervals/timeouts
-          stopTickSound();
-          
-          // Start playing tick sound every 400ms
-          const audio2 = document.getElementById("audio2");
-          tickInterval = setInterval(() => {
-            audio2.currentTime = 0; // Reset audio to start
-            audio2.play();
-          }, 400);
-          
-          // Stop the tick sound after 10 seconds
-          tickTimeout = setTimeout(() => {
-            clearInterval(tickInterval);
-          }, 10000);
-        }
-  
-        function stopTickSound() {
-          clearInterval(tickInterval);
-          clearTimeout(tickTimeout);
-        }
-  
-        function stopIndicator(side) {
-          if (side === 'left') {
-            clearInterval(leftInterval);
-            leftBlinking = false;
-            document.getElementById('il').classList.remove('blk');
-            document.getElementById('il').classList.add('nlk');
-          } else if (side === 'right') {
-            clearInterval(rightInterval);
-            rightBlinking = false;
-            document.getElementById('ir').classList.remove('blk');
-            document.getElementById('ir').classList.add('nlk');
-          }
-  
-          // If neither indicator is blinking, stop the sound
-          if (!leftBlinking && !rightBlinking && !hazardOn) {
-            stopTickSound();
-          }
-        }
-  
-        function toggleIndicator(side) {
-          if (side === 'left') {
-            if (leftBlinking) {
-              stopIndicator('left');
-            } else {
-              leftBlinking = true;
-              startTickSound();
-              blinkIndicator('il');
-            }
-          } else if (side === 'right') {
-            if (rightBlinking) {
-              stopIndicator('right');
-            } else {
-              rightBlinking = true;
-              startTickSound();
-              blinkIndicator('ir');
-            }
-          }
-        }
-  
-        function blinkIndicator(id) {
-          let isOn = false;
-          const indicator = document.getElementById(id);
-          const interval = setInterval(() => {
-            if (isOn) {
-              indicator.classList.remove('blk');
-              indicator.classList.add('nlk');
-            } else {
-              indicator.classList.add('blk');
-              indicator.classList.remove('nlk');
-            }
-            isOn = !isOn;
-          }, 400);
-  
-          if (id === 'il') {
-            leftInterval = interval;
-          } else {
-            rightInterval = interval;
-          }
-        }
-  
-        function toggleHazard() {
-          if (hazardOn) {
-            clearInterval(leftInterval);
-            clearInterval(rightInterval);
-            stopTickSound();
-            document.getElementById('il').classList.remove('blk');
-            document.getElementById('ir').classList.remove('blk');
-            document.getElementById('il').classList.add('nlk');
-            document.getElementById('ir').classList.add('nlk');
-            leftBlinking = false;
-            rightBlinking = false;
-            hazardOn = false;
-          } else {
-            hazardOn = true;
-            leftBlinking = true;
-            rightBlinking = true;
-            startTickSound();
-            blinkIndicator('il');
-            blinkIndicator('ir');
-          }
-        }
+    stopTickSound();
+    const audio2 = document.getElementById("audio2");
+    tickInterval = setInterval(() => {
+      audio2.currentTime = 0;
+      audio2.play();
+    }, 400);
+  }
+
+  function stopTickSound() {
+    clearInterval(tickInterval);
+    clearTimeout(tickTimeout);
+  }
+
+  function stopAllIndicators() {
+    // Clear left indicator
+    clearInterval(leftInterval);
+    leftBlinking = false;
+    document.getElementById('il').classList.remove('blk');
+    document.getElementById('il').classList.add('nlk');
+    
+    // Clear right indicator
+    clearInterval(rightInterval);
+    rightBlinking = false;
+    document.getElementById('ir').classList.remove('blk');
+    document.getElementById('ir').classList.add('nlk');
+    
+    // Clear hazard
+    clearTimeout(hazardTimeout);
+    hazardOn = false;
+    
+    stopTickSound();
+  }
+
+  function blinkIndicator(id, duration) {
+    let isOn = false;
+    const indicator = document.getElementById(id);
+    const interval = setInterval(() => {
+      indicator.classList.toggle('blk');
+      indicator.classList.toggle('nlk');
+    }, 400);
+
+    if (id === 'il') leftInterval = interval;
+    if (id === 'ir') rightInterval = interval;
+
+    // Auto-stop after duration
+    setTimeout(() => {
+      clearInterval(interval);
+      indicator.classList.remove('blk');
+      indicator.classList.add('nlk');
+      if (id === 'il') leftBlinking = false;
+      if (id === 'ir') rightBlinking = false;
+      
+      // Stop sound if no active indicators
+      if (!leftBlinking && !rightBlinking) {
+        stopTickSound();
+      }
+    }, duration);
+  }
+
+  function toggleIndicator(side) {
+    if ((side === 'left' && leftBlinking) || (side === 'right' && rightBlinking)) {
+      stopAllIndicators();
+      return;
+    }
+
+    startTickSound();
+    
+    if (side === 'left') {
+      leftBlinking = true;
+      blinkIndicator('il', 10000);
+    } else {
+      rightBlinking = true;
+      blinkIndicator('ir', 10000);
+    }
+  }
+
+  function toggleHazard() {
+    if (hazardOn) {
+      stopAllIndicators();
+      return;
+    }
+
+    hazardOn = true;
+    leftBlinking = true;
+    rightBlinking = true;
+    startTickSound();
+    
+    blinkIndicator('il', 10000);
+    blinkIndicator('ir', 10000);
+    
+    // Sync hazard timeout
+    hazardTimeout = setTimeout(() => {
+      hazardOn = false;
+      stopAllIndicators();
+    }, 10000);
+  }
   
         function togglePositions() {
           const menu1 = document.querySelector(".menu1");
