@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Previous head section remains the same -->
+  <head>
+    <!-- All previous head content remains exactly the same -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reactor Animation</title>
+    <style>
+      /* All previous styles remain exactly the same */
+      body {
+        margin: 0;
+      }
+
+      .fullpage-wrapper {
+        width: 100%;
+        height: 100vh;
+        background: radial-gradient(#353c44, #222931);
+        display: flex;
+      }
+
+      .reactor-container {
+        width: 250px;
+        height: 250px;
+        margin: auto;
+        border: 1px dashed #888;
+        position: relative;
+        border-radius: 50%;
+        background-color: #384c50;
+        border: 1px solid rgb(18, 20, 20);
+        box-shadow: 0px 0px 32px 8px rgb(18, 20, 20),
+          0px 0px 4px 1px rgb(18, 20, 20) inset;
+      }
+
+      .reactor-container-inner {
+        height: 238px;
+        width: 238px;
+        background-color: rgb(22, 26, 27);
+        box-shadow: 0px 0px 4px 1px #52fefe;
+      }
+
+      .circle {
+        border-radius: 50%;
+      }
+
+      .abs-center {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+      }
+
+      .core-inner {
+        width: 70px;
+        height: 70px;
+        border: 5px solid #1b4e5f;
+        background-color: #ffffff;
+        box-shadow: 0px 0px 7px 5px #52fefe, 0px 0px 10px 10px #52fefe inset;
+      }
+
+      .core-outer {
+        width: 120px;
+        height: 120px;
+        border: 1px solid #52fefe;
+        background-color: #ffffff;
+        box-shadow: 0px 0px 2px 1px #52fefe, 0px 0px 10px 5px #52fefe inset;
+      }
+
+      .core-wrapper {
+        width: 180px;
+        height: 180px;
+        background-color: #073c4b;
+        box-shadow: 0px 0px 5px 4px #52fefe, 0px 0px 6px 2px #52fefe inset;
+      }
+
+      .tunnel {
+        width: 220px;
+        height: 220px;
+        background-color: #ffffff;
+        box-shadow: 0px 0px 5px 1px #52fefe, 0px 0px 5px 4px #52fefe inset;
+      }
+
+      .coil-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .coil {
+        position: absolute;
+        width: 30px;
+        height: 20px;
+        top: calc(50% - 110px);
+        left: calc(50% - 15px);
+        transform-origin: 15px 110px;
+        background-color: #073c4b;
+        box-shadow: 0px 0px 5px #52fefe inset;
+      }
+
+      .coil-1 { transform: rotate(0deg); }
+      .coil-2 { transform: rotate(45deg); }
+      .coil-3 { transform: rotate(90deg); }
+      .coil-4 { transform: rotate(135deg); }
+      .coil-5 { transform: rotate(180deg); }
+      .coil-6 { transform: rotate(225deg); }
+      .coil-7 { transform: rotate(270deg); }
+      .coil-8 { transform: rotate(315deg); }
+
+      @keyframes reactor-anim {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      .coil-container.active {
+        animation: reactor-anim 5s infinite linear;
+      }
+
+      .menu1, .menu2, .menu3, .menu4, .menu5, .menu6 {
+        transition: all 0.3s ease-out;
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        padding: 2px;
+        color: white;
+        line-height: 50px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 100;
+      }
+
+      .button {
+        text-align: center;
+        transform: translateX(50%);
+        padding: 10px 20px;
+        margin: 35px;
+        font-size: 18px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+      }
+
+      .button:hover {
+        background-color: #0056b3;
+      }
+
+      .blk {
+        color: orange;
+        box-shadow: 0px 0px 50px #fad0269f;
+        background-color: #facf26;
+      }
+
+      .nlk{
+        color: black;
+        box-shadow: 0 0 15px #52fefe inset;
+
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- All previous HTML structure remains exactly the same -->
+    <div class="fullpage-wrapper">
+      <div class="reactor-container">
+        <!-- Left Indicator -->
+        <div id="il"
+          onclick="toggleIndicator('left')"
+          class="menu1 nlk"
+          style="
+            position: absolute;
+            background: white;
+            top: 90px;
+            left: 100px;
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+          "
+        >
+          &#9665;
+        </div>
+        <!-- Right Indicator -->
+        <div id="ir"
+          onclick="toggleIndicator('right')"
+          class="menu2 nlk"
+          style="
+            position: absolute;
+            background: white;
+            top: 90px;
+            right: 100px;
+          "
+        >
+          &#9665;
+        </div>
+        <div
+          class="menu3"
+          style="
+            position: absolute;
+            color: black;
+            background: white;
+            box-shadow: 0 0 15px #52fefe inset;
+            bottom: 90px;
+            left: 100px;
+          "
+          onclick="hplay()"
+        >
+          &#128361;
+        </div>
+        <div
+          class="menu4"
+          style="
+            position: absolute;
+            color: black;
+            background: white;
+            box-shadow: 0 0 15px #52fefe inset;
+            bottom: 90px;
+            right: 100px;
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+          "
+          onclick="hplay()"
+        >
+          &#128361;
+        </div>
+        <div
+          class="menu5"
+          style="
+            position: absolute;
+            background: green;
+            box-shadow: 0 0 10px #111 inset;
+            bottom: 90px;
+            right: 40%;
+            font-size: 18px;
+          "
+        >
+          Start
+        </div>
+        <!-- Hazard -->
+        <div
+          class="menu6"
+          style="
+            position: absolute;
+            background: white;
+            top: 90px;
+            right: 40%;
+            color: white;
+            box-shadow: 0 0 10px #111 inset;
+            background: crimson;
+            font-size: 20px;
+          "
+          onclick="toggleHazard()"
+        >
+          &#x26A0;
+        </div>
+        <div class="reactor-container-inner circle abs-center"></div>
+        <div class="tunnel circle abs-center"></div>
+        <div class="core-wrapper circle abs-center"></div>
+        <div class="core-outer circle abs-center"></div>
+        <div
+          onclick="play()"
+          class="core-inner circle abs-center"
+          id="toggleButton"
+          style="
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+          "
+        >
+          &#x26A1;
+        </div>
+        <div class="coil-container">
+          <div class="coil coil-1"></div>
+          <div class="coil coil-2"></div>
+          <div class="coil coil-3"></div>
+          <div class="coil coil-4"></div>
+          <div class="coil coil-5"></div>
+          <div class="coil coil-6"></div>
+          <div class="coil coil-7"></div>
+          <div class="coil coil-8"></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <center>
+        <button class="button" onclick="showAlert('A')">A</button>
+        <button class="button" onclick="showAlert('B')">B</button>
+        <button class="button" onclick="showAlert('C')">C</button>
+      </center>
+    </div>
+
+    <audio id="audio" src="start.mp3"></audio>
+    <audio id="audio1" src="horn.mp3"></audio>
+    <audio id="audio2" src="tick.mp3"></audio>
+
+    <script>
+        let ignition = 0;
+        let leftBlinking = false;
+        let rightBlinking = false;
+        let hazardOn = false;
+        let leftInterval, rightInterval;
+        let tickInterval;
+        let tickTimeout;
+  
+        function play() {
+          if(ignition == 0) {
+            ignition = 1;
+            var audio = document.getElementById("audio");
+            audio.play();
+          } else {
+            ignition = 0;
+          }
+        }
+  
+        function hplay() {
+          var audio = document.getElementById("audio1");
+          audio.play();
+        }
+  
+        function startTickSound() {
+          // Clear any existing tick intervals/timeouts
+          stopTickSound();
+          
+          // Start playing tick sound every 400ms
+          const audio2 = document.getElementById("audio2");
+          tickInterval = setInterval(() => {
+            audio2.currentTime = 0; // Reset audio to start
+            audio2.play();
+          }, 400);
+          
+          // Stop the tick sound after 10 seconds
+          tickTimeout = setTimeout(() => {
+            clearInterval(tickInterval);
+          }, 10000);
+        }
+  
+        function stopTickSound() {
+          clearInterval(tickInterval);
+          clearTimeout(tickTimeout);
+        }
+  
+        function stopIndicator(side) {
+          if (side === 'left') {
+            clearInterval(leftInterval);
+            leftBlinking = false;
+            document.getElementById('il').classList.remove('blk');
+            document.getElementById('il').classList.add('nlk');
+          } else if (side === 'right') {
+            clearInterval(rightInterval);
+            rightBlinking = false;
+            document.getElementById('ir').classList.remove('blk');
+            document.getElementById('ir').classList.add('nlk');
+          }
+  
+          // If neither indicator is blinking, stop the sound
+          if (!leftBlinking && !rightBlinking && !hazardOn) {
+            stopTickSound();
+          }
+        }
+  
+        function toggleIndicator(side) {
+          if (side === 'left') {
+            if (leftBlinking) {
+              stopIndicator('left');
+            } else {
+              leftBlinking = true;
+              startTickSound();
+              blinkIndicator('il');
+            }
+          } else if (side === 'right') {
+            if (rightBlinking) {
+              stopIndicator('right');
+            } else {
+              rightBlinking = true;
+              startTickSound();
+              blinkIndicator('ir');
+            }
+          }
+        }
+  
+        function blinkIndicator(id) {
+          let isOn = false;
+          const indicator = document.getElementById(id);
+          const interval = setInterval(() => {
+            if (isOn) {
+              indicator.classList.remove('blk');
+              indicator.classList.add('nlk');
+            } else {
+              indicator.classList.add('blk');
+              indicator.classList.remove('nlk');
+            }
+            isOn = !isOn;
+          }, 400);
+  
+          if (id === 'il') {
+            leftInterval = interval;
+          } else {
+            rightInterval = interval;
+          }
+        }
+  
+        function toggleHazard() {
+          if (hazardOn) {
+            clearInterval(leftInterval);
+            clearInterval(rightInterval);
+            stopTickSound();
+            document.getElementById('il').classList.remove('blk');
+            document.getElementById('ir').classList.remove('blk');
+            document.getElementById('il').classList.add('nlk');
+            document.getElementById('ir').classList.add('nlk');
+            leftBlinking = false;
+            rightBlinking = false;
+            hazardOn = false;
+          } else {
+            hazardOn = true;
+            leftBlinking = true;
+            rightBlinking = true;
+            startTickSound();
+            blinkIndicator('il');
+            blinkIndicator('ir');
+          }
+        }
+  
+        function togglePositions() {
+          const menu1 = document.querySelector(".menu1");
+          const menu2 = document.querySelector(".menu2");
+          const menu3 = document.querySelector(".menu3");
+          const menu4 = document.querySelector(".menu4");
+          const menu5 = document.querySelector(".menu5");
+          const menu6 = document.querySelector(".menu6");
+          const coil = document.querySelector(".coil-container");
+  
+          if (menu1.style.top === "90px") {
+            menu1.style.top = "20px";
+            menu1.style.right = "-40px";
+            menu1.style.left = "";
+  
+            menu2.style.top = "20px";
+            menu2.style.left = "-40px";
+            menu2.style.right = "";
+  
+            menu3.style.bottom = "20px";
+            menu3.style.left = "-40px";
+            menu3.style.right = "";
+  
+            menu4.style.bottom = "20px";
+            menu4.style.right = "-40px";
+            menu4.style.left = "";
+  
+            menu5.style.bottom = "-60px";
+            menu5.style.right = "40%";
+  
+            menu6.style.top = "-60px";
+            menu6.style.right = "40%";
+  
+            coil.classList.add("active");
+          } else {
+            menu1.style.top = "90px";
+            menu1.style.left = "100px";
+            menu1.style.right = "";
+  
+            menu2.style.top = "90px";
+            menu2.style.right = "100px";
+            menu2.style.left = "";
+  
+            menu3.style.bottom = "90px";
+            menu3.style.left = "100px";
+            menu3.style.right = "";
+  
+            menu4.style.bottom = "90px";
+            menu4.style.right = "100px";
+            menu4.style.left = "";
+  
+            menu5.style.bottom = "90px";
+            menu5.style.right = "40%";
+  
+            menu6.style.top = "90px";
+            menu6.style.right = "40%";
+  
+            coil.classList.remove("active");
+          }
+        }
+  
+        document.getElementById("toggleButton").addEventListener("click", togglePositions);
+  
+        function showAlert(buttonLabel) {
+          alert("You clicked button " + buttonLabel);
+        }
+      </script>
+  </body>
+</html>
